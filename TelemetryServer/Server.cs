@@ -31,7 +31,7 @@ class TelemetryServer
         using NetworkStream stream = client.GetStream();
         using StreamReader reader = new StreamReader(stream);
 
-        string planeId = reader.ReadLine(); // unique flight ID
+        string planeId = reader.ReadLine(); // Unique flight ID
         string? line;
         double prevFuel = -1;
 
@@ -60,14 +60,16 @@ class TelemetryServer
             double avg = totalFuel / count;
             finalAverages[planeId] = avg;
 
-            Console.WriteLine($"Flight {planeId} completed. Avg fuel usage: {avg:F4}");
+            Console.WriteLine($"Flight {planeId} completed. Lines received: {count}. Avg fuel usage: {avg:F4}");
 
-            string logEntry = $"{DateTime.Now}, {planeId}, {avg:F4}";
+            string logEntry = $"{DateTime.Now}, {planeId}, {count} points, {avg:F4}";
             File.AppendAllText("flight_log.txt", logEntry + Environment.NewLine);
         }
         else
         {
             Console.WriteLine($"Flight {planeId} ended, but no fuel data was received.");
         }
+
+        Console.WriteLine($"Flight {planeId} has disconnected.\n");
     }
 }
