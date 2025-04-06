@@ -1,0 +1,15 @@
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\bin\Release\net8.0\TelemetryServer.exe
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\bin\Release\net8.0\TelemetryServer.deps.json
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\bin\Release\net8.0\TelemetryServer.runtimeconfig.json
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\bin\Release\net8.0\TelemetryServer.dll
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\bin\Release\net8.0\TelemetryServer.pdb
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\obj\Release\net8.0\TelemetryServer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\obj\Release\net8.0\TelemetryServer.AssemblyInfoInputs.cache
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\obj\Release\net8.0\TelemetryServer.AssemblyInfo.cs
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\obj\Release\net8.0\TelemetryServer.csproj.CoreCompileInputs.cache
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\obj\Release\net8.0\TelemetryServer.sourcelink.json
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\obj\Release\net8.0\TelemetryServer.dll
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\obj\Release\net8.0\refint\TelemetryServer.dll
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\obj\Release\net8.0\TelemetryServer.pdb
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\obj\Release\net8.0\TelemetryServer.genruntimeconfig.cache
+C:\Users\evanj\Downloads\TelemetryServer\TelemetryServer\obj\Release\net8.0\ref\TelemetryServer.dll
