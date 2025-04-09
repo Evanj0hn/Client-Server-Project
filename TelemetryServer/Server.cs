@@ -17,6 +17,9 @@ class TelemetryServer
     // Stores the final average fuel usage per flight ID
     static ConcurrentDictionary<string, double> finalAverages = new();
 
+    // Lock object for thread-safe file writing
+    static readonly object logFileLock = new();
+
     static void Main()
     {
         // Set up a TCP listener on port 5000 to accept incoming client connections
@@ -91,9 +94,12 @@ class TelemetryServer
 
                 Console.WriteLine($"Flight {planeId} completed. Lines received: {count}. Avg fuel usage: {avg:F4}");
 
-                // Append the result to a flight log file
+                // Append the result to a flight log file using a lock for thread-safety
                 string logEntry = $"{DateTime.Now}, {planeId}, {count} points, {avg:F4}";
-                File.AppendAllText("flight_log.txt", logEntry + Environment.NewLine);
+                lock (logFileLock)
+                {
+                    File.AppendAllText("flight_log.txt", logEntry + Environment.NewLine);
+                }
             }
             else
             {
