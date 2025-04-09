@@ -44,10 +44,15 @@ class TelemetryServer
             using NetworkStream stream = client.GetStream();
             using StreamReader reader = new StreamReader(stream);
 
+            // Get client connection details
+            IPEndPoint remoteEP = (IPEndPoint)client.Client.RemoteEndPoint;
+            string ip = remoteEP.Address.ToString();
+            int port = remoteEP.Port;
+
             // First message received is the flight's unique ID
             string planeId = reader.ReadLine();
             string? line;
-            double prevFuel = -1; // Used to calculate fuel used per reading
+            double prevFuel = -1;
 
             // Read each line sent by the client
             while ((line = reader.ReadLine()) != null)
@@ -56,18 +61,22 @@ class TelemetryServer
                 if (parts.Length < 2) continue;
 
                 string timestamp = parts[0].Trim(); // Time of reading
-                if (!double.TryParse(parts[1].Trim(), out double fuel)) continue; // Fuel quantity
+                if (!double.TryParse(parts[1].Trim(), out double fuel)) continue;
 
-                // Log received data
-                Console.WriteLine($"Received from {planeId}: {timestamp}, {fuel}");
+                // Get current sequence count (increment after display)
+                timePoints.TryGetValue(planeId, out int seq);
+                seq++;
 
-                // Calculate fuel used from the difference between previous and current fuel
+                // Custom log output format
+                Console.WriteLine($"[{port,5}] {ip}:{port} | ID: {planeId,-5} | Fuel: {fuel,6:F2} | Seq: {seq,4} | Time: {timestamp}");
+
+                // Fuel usage tracking
                 if (prevFuel != -1)
                     totalFuelUsed.AddOrUpdate(planeId, prevFuel - fuel, (k, v) => v + (prevFuel - fuel));
 
                 prevFuel = fuel;
 
-                // Keep track of how many readings were received
+                // Increment sequence counter
                 timePoints.AddOrUpdate(planeId, 1, (k, v) => v + 1);
             }
 

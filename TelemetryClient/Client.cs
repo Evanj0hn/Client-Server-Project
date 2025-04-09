@@ -10,12 +10,21 @@ class TelemetryClient
         // Generate a unique 6-character flight ID for this client
         string id = Guid.NewGuid().ToString().Substring(0, 6);
 
-        // Prompt the user to enter the server's IP address
-        Console.Write("Enter server IP (default 127.0.0.1): ");
-        string ipInput = Console.ReadLine();
-        string serverIp = string.IsNullOrWhiteSpace(ipInput) ? "127.0.0.1" : ipInput;
+        // STEP 1: Determine server IP
+        string serverIp = "127.0.0.1";
+        if (args.Length >= 1 && !string.IsNullOrWhiteSpace(args[0]))
+        {
+            serverIp = args[0];
+            Console.WriteLine($"Using provided server IP: {serverIp}");
+        }
+        else
+        {
+            Console.Write("Enter server IP (default 127.0.0.1): ");
+            string ipInput = Console.ReadLine();
+            serverIp = string.IsNullOrWhiteSpace(ipInput) ? "127.0.0.1" : ipInput;
+        }
 
-        // Look for all .txt telemetry files in the "data" folder
+        // STEP 2: Determine selected file
         string[] files = Directory.GetFiles("data", "*.txt");
         if (files.Length == 0)
         {
@@ -23,65 +32,42 @@ class TelemetryClient
             return;
         }
 
-        //// === RANDOM FILE SELECTION ===
-        //Random rand = new Random();
-        //string selectedFile = files[rand.Next(files.Length)];
-        //Console.WriteLine("Randomly selected: " + Path.GetFileName(selectedFile));
+        string selectedFile;
 
-        /*
-        // === FILE SELECTION MENU ===
-
-        Console.WriteLine("Available flight files:");
-        for (int i = 0; i < files.Length; i++)
-            Console.WriteLine($"{i + 1}: {Path.GetFileName(files[i])}");
-
-        Console.Write("Choose a file number (or press ENTER for random): ");
-        string input = Console.ReadLine();
-
-        if (int.TryParse(input, out int choice) && choice > 0 && choice <= files.Length)
+        if (args.Length >= 2 && !string.IsNullOrWhiteSpace(args[1]))
         {
-            selectedFile = files[choice - 1];
+            selectedFile = Path.Combine("data", args[1]);
+            if (!File.Exists(selectedFile))
+            {
+                Console.WriteLine($"File '{args[1]}' not found in data folder.");
+                return;
+            }
+
+            Console.WriteLine("Using provided file: " + Path.GetFileName(selectedFile));
         }
         else
         {
-            Random rand = new Random();
-            selectedFile = files[rand.Next(files.Length)];
-            Console.WriteLine("Randomly selected: " + Path.GetFileName(selectedFile));
+            // Default hardcoded or random fallback
+            selectedFile = Path.Combine("data", "katl-kefd-B737-700.txt");
+            Console.WriteLine("Default file selected: " + Path.GetFileName(selectedFile));
         }
-        */
 
-        /*
-        // === HARDCODED FILE SELECTION ===
-        // Uncomment this to force the client to always use a specific file.
-
-        string selectedFile = Path.Combine("data", "katl-kefd-B737-700.txt");
-        Console.WriteLine("Hardcoded file selected: " + Path.GetFileName(selectedFile));
-        */
-
-        string selectedFile = Path.Combine("data", "katl-kefd-B737-700.txt");
-        Console.WriteLine("Hardcoded file selected: " + Path.GetFileName(selectedFile));
-
-        // Display basic connection info
+        // STEP 3: Connect and send data
         Console.WriteLine($"Client {id} starting...");
         Console.WriteLine($"Connecting to server at {serverIp}...");
 
-        // Connect to the server on port 5000
         using TcpClient client = new TcpClient(serverIp, 5000);
         Console.WriteLine(" Connected to server.");
 
-        // Set up network stream and writer for sending data
         using NetworkStream stream = client.GetStream();
         using StreamWriter writer = new StreamWriter(stream) { AutoFlush = true };
 
-        // Send the unique client ID to the server
-        writer.WriteLine(id);
+        writer.WriteLine(id); // Send flight ID
 
         Console.WriteLine($" Sending data from {Path.GetFileName(selectedFile)}");
 
-        // Read the selected file line by line and send fuel data
         foreach (string line in File.ReadLines(selectedFile))
         {
-            // Skip header lines or empty lines
             if (line.StartsWith("FUEL TOTAL") || string.IsNullOrWhiteSpace(line))
                 continue;
 
@@ -94,7 +80,7 @@ class TelemetryClient
             writer.WriteLine($"{timestamp},{fuel}");
             Console.WriteLine($"Sent: {timestamp}, {fuel}");
 
-            Thread.Sleep(500); // Simulate delay
+            //Thread.Sleep(500); // optional delay
         }
 
         Console.WriteLine($" Client {id} finished sending data.");
