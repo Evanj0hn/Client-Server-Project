@@ -80,7 +80,7 @@ class TelemetryClient
             writer.WriteLine($"{timestamp},{fuel}");
             Console.WriteLine($"Sent: {timestamp}, {fuel}");
 
-            //Thread.Sleep(500); // optional delay
+            Thread.Sleep(100); 
         }
 
         Console.WriteLine($" Client {id} finished sending data.");
